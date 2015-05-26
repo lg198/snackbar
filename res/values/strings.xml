@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">snackbar</string>
+    <string name="app_name">SnackBar</string>
+    <string name="edit_menu">Edit Menu</string>
+    <string name="new_transaction">New Transaction</string>
+    <string name="edit_menu_menu_add_item">Add Item</string>
 </resources>

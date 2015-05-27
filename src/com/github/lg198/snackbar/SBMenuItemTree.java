@@ -73,6 +73,30 @@ public class SBMenuItemTree {
         return ((List) levels.get(path)).size();
     }
 
+    public void rename(String path, String oname, String nname) {
+        if (!levels.containsKey(path)) {
+            return;
+        }
+        List l = (List) levels.get(path);
+        for (Object o : l) {
+            Map m = (Map) o;
+            if (m.get("name").equals(oname)) {
+                m.put("name", nname);
+                break;
+            }
+        }
+        ListIterator li = new ArrayList(levels.keySet()).listIterator();
+        while (li.hasNext()) {
+            Object key = li.next();
+            String kpath = (String) key;
+            if (kpath.startsWith(path + "." + oname)) {
+                kpath = kpath.replace(path + "." + oname, path + "." + nname);
+            }
+            Object oldlist = levels.remove(key);
+            levels.put(kpath, oldlist);
+        }
+    }
+
     public Map levels() {
         return levels;
     }

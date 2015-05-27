@@ -3,6 +3,7 @@ package com.github.lg198.snackbar.editmenu;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.app.ListFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
@@ -14,6 +15,8 @@ import com.github.lg198.snackbar.R;
 import com.github.lg198.snackbar.SBMenuItem;
 
 import java.text.NumberFormat;
+import java.util.List;
+import java.util.Map;
 
 
 public class EditMenuModifyFragment extends DialogFragment {
@@ -51,6 +54,7 @@ public class EditMenuModifyFragment extends DialogFragment {
         } else {
             dollars.setText(NumberFormat.getCurrencyInstance().format(bun.getDouble("cost")).substring(1));
         }
+        cb.setEnabled(false);
         name.setText(bun.getString("name"));
 
         builder.setView(v);
@@ -60,27 +64,43 @@ public class EditMenuModifyFragment extends DialogFragment {
                 EditMenuActivity ema = (EditMenuActivity) getActivity();
 
 
-                if (ema.currentAdapter.tree.contains(ema.currentPos, new SBMenuItem(name.getText().toString()))) {
+                if (!name.getText().toString().equals(bun.getString("name")) && ema.currentAdapter.tree.contains(ema.currentPos, new SBMenuItem(name.getText().toString()))) {
                     AlertDialog.Builder alertBuilder = new AlertDialog.Builder(getActivity());
                     alertBuilder.setTitle("Cannot update that item!");
                     alertBuilder.setMessage("The item's new name is already taken!");
                     alertBuilder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-
+                            dialog.dismiss();
                         }
                     });
                     alertBuilder.create().show();
                     return;
                 }
-                //TODO: RENAME OR CHANGE COST
+
+                ema.currentAdapter.tree.rename(ema.currentPos, bun.getString("name"), name.getText().toString());
+                ListFragment lf = (ListFragment) ema.getFragmentManager().findFragmentByTag(ema.currentPos);
+                lf.setListAdapter(ema.currentAdapter);
+
+                if (!bun.getBoolean("category")) {
+                    List l = ema.currentAdapter.tree.getFromLevel(ema.currentPos);
+                    for (Object omap : l) {
+                        Map map = (Map) omap;
+                        if (map.get("name").equals(name.getText().toString())) {
+                            map.put("cost", Double.parseDouble(dollars.getText().toString()));
+                            ListFragment lff = (ListFragment) ema.getFragmentManager().findFragmentByTag(ema.currentPos);
+                            lff.setListAdapter(ema.currentAdapter);
+                        }
+                    }
+                }
+
                 dialog.dismiss();
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                //do nothing
+                dialog.cancel();
             }
         });
 

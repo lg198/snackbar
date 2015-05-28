@@ -60,9 +60,12 @@ public class EditMenuActivity extends Activity {
         return tree;
     }
 
+    public File getMenuFile() {
+        return new File(getApplication().getFilesDir(), "menu.json");
+    }
+
     private void loadTree() {
-        File dir = getApplication().getFilesDir();
-        File menuFile = new File(dir, "menu.json");
+        File menuFile = getMenuFile();
         if (!menuFile.exists()) {
             try {
                 menuFile.createNewFile();

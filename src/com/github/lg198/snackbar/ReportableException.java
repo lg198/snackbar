@@ -24,8 +24,10 @@ public class ReportableException extends Exception {
 
     //GENERIC
     public static final String NETWORK_ERROR = "There was a problem with the network and your request could not be completed.";
+    public static final String NETWORK_NOT_CONNECTED = "You do not have a valid internet connection.";
 
     //SPECIFIC
     public static final String MENU_SHARE_DOWNLOAD_NOT_FOUND = "The menu you requested was not found!";
+    public static final String MENU_SHARE_UPLOAD_SERVER_ERROR = "There was a server error and your menu could not be shared!";
 
 }

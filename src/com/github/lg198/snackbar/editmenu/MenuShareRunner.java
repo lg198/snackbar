@@ -16,6 +16,7 @@ public class MenuShareRunner {
     private static final String PASTE_KEY = "eef081f7a6d25de667894071b339ee84";
 
     private static final String RAW_DOWNLOAD_URL = "http://paste.ee/r/";
+    private static final String API_URL = "http://paste.ee/api";
 
     public static boolean isCodeValid(String code) {
         for (Character c : code.toCharArray()) {
@@ -26,20 +27,33 @@ public class MenuShareRunner {
         return true;
     }
 
-    public static void downloadMenu(EditMenuActivity a, String code) {
+    public static void downloadMenu(EditMenuActivity a, String code, MenuShareDownloadCallback callback) throws ReportableException {
         String url = RAW_DOWNLOAD_URL + code;
 
         ConnectivityManager connMgr = (ConnectivityManager) a.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
         if (networkInfo != null && networkInfo.isConnected()) {
-            new MenuShareDownloadAsyncTask().doInBackground(url, a.getMenuFile());
+            new MenuShareDownloadAsyncTask().execute(url, a.getMenuFile(), callback);
         } else {
-            //TODO: HANDLE ERROR
+            throw new ReportableException(ReportableException.NETWORK_NOT_CONNECTED);
         }
+    }
 
+    public static void uploadMenu(EditMenuActivity a, MenuShareUploadCallback callback) throws ReportableException {
+        String url = API_URL;
+
+        ConnectivityManager connMgr = (ConnectivityManager) a.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        if (networkInfo != null && networkInfo.isConnected()) {
+            new MenuShareUploadAsyncTask().execute(url, a.getMenuFile(), callback);
+        } else {
+            throw new ReportableException(ReportableException.NETWORK_NOT_CONNECTED);
+        }
     }
 
     private static class MenuShareDownloadAsyncTask extends AsyncTask<Object, Void, MenuShareDownloadResult> {
+
+        private MenuShareDownloadCallback callback;
 
 
         @Override
@@ -47,6 +61,7 @@ public class MenuShareRunner {
             MenuShareDownloadResult result;
             try {
                 try {
+                    callback = (MenuShareDownloadCallback) params[2];
                     InputStream is = getInputStream((String) params[0]);
                     readAndWriteFiles(is, (File) params[1]);
                     result = new MenuShareDownloadResult();
@@ -57,6 +72,11 @@ public class MenuShareRunner {
                 result = new MenuShareDownloadResult(e);
             }
             return result;
+        }
+
+        @Override
+        public void onPostExecute(MenuShareDownloadResult res) {
+            callback.finished(res);
         }
 
         private InputStream getInputStream(String url) throws IOException, ReportableException {
@@ -89,7 +109,9 @@ public class MenuShareRunner {
     }
 
 
-    private static class MenuShareUpwnloadAsyncTask extends AsyncTask<Object, Void, MenuShareUploadResult> {
+    private static class MenuShareUploadAsyncTask extends AsyncTask<Object, Void, MenuShareUploadResult> {
+
+        private MenuShareUploadCallback callback;
 
 
         @Override
@@ -97,7 +119,9 @@ public class MenuShareRunner {
             MenuShareUploadResult result;
             try {
                 try {
-                    upload((String) params[0], (File) params[1]);
+                    callback = (MenuShareUploadCallback) params[2];
+                    String code = upload((String) params[0], (File) params[1]);
+                    result = new MenuShareUploadResult(code);
                 } catch (IOException e) {
                     throw new ReportableException(ReportableException.NETWORK_ERROR, e);
                 }
@@ -107,7 +131,12 @@ public class MenuShareRunner {
             return result;
         }
 
-        private void upload(String url, File f) throws IOException, ReportableException {
+        @Override
+        public void onPostExecute(MenuShareUploadResult res) {
+            callback.finished(res);
+        }
+
+        private String upload(String url, File f) throws IOException, ReportableException {
             URL urlObj = new URL(url);
             HttpURLConnection connection = (HttpURLConnection) urlObj.openConnection();
             connection.setReadTimeout(10000);
@@ -118,11 +147,13 @@ public class MenuShareRunner {
 
             InputStream is = null;
             OutputStream os = null;
+            String code = null;
             try {
                 connection.connect();
                 is = connection.getInputStream();
                 os = connection.getOutputStream();
                 fillPost(os, f);
+                code = readCode(is);
             } finally {
                 if (is != null) {
                     is.close();
@@ -131,6 +162,7 @@ public class MenuShareRunner {
                     os.close();
                 }
             }
+            return code;
         }
 
         private void fillPost(OutputStream os, File f) throws IOException, ReportableException {
@@ -154,6 +186,19 @@ public class MenuShareRunner {
             pw.append(req);
             pw.flush();
             pw.close();
+        }
+
+        private String readCode(InputStream is) throws IOException, ReportableException {
+            String contents = "";
+            BufferedReader br = new BufferedReader(new InputStreamReader(is));
+            for (String line; (line = br.readLine()) != null; ) {
+                contents += line;
+            }
+            br.close();
+            if (contents.trim().startsWith("error")) {
+                throw new ReportableException(ReportableException.MENU_SHARE_UPLOAD_SERVER_ERROR, new RuntimeException(contents));
+            }
+            return contents.trim();
         }
     }
 }

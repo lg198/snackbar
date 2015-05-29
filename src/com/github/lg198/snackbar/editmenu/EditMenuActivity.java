@@ -140,6 +140,12 @@ public class EditMenuActivity extends Activity {
                 EditMenuAddFragment emaf = new EditMenuAddFragment();
                 emaf.show(getFragmentManager(), "add_menu_item");
                 return true;
+            case R.id.edit_menu_menu_share_item:
+                goToShareDialog();
+                return true;
+            case R.id.edit_menu_menu_import_item:
+                goToImportDialog();
+                return true;
             default:
                 if (currentPos.indexOf(".") < 0) {
                     return super.onOptionsItemSelected(item);
@@ -199,5 +205,14 @@ public class EditMenuActivity extends Activity {
             lf.setListAdapter(currentAdapter);
             return true;
         }
+    }
+
+    public void goToShareDialog() {
+        MenuShareFragment share = new MenuShareFragment();
+        share.show(getFragmentManager(), "share_dialog");
+    }
+
+    public void goToImportDialog() {
+
     }
 }

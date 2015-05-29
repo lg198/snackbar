@@ -4,4 +4,10 @@
           android:icon="@drawable/ic_action_new"
           android:title="@string/edit_menu_menu_add_item"
           android:showAsAction="ifRoom"/>
+    <item android:id="@+id/edit_menu_menu_share_item"
+          android:title="Share Menu"
+          android:showAsAction="never"/>
+    <item android:id="@+id/edit_menu_menu_import_item"
+          android:title="Import Menu"
+          android:showAsAction="never"/>
 </menu>

@@ -22,6 +22,10 @@ public class MenuShareUploadResult {
         return success;
     }
 
+    public String getCode() {
+        return code;
+    }
+
     public ReportableException getError() {
         return error;
     }

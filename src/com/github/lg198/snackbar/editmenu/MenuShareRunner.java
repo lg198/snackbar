@@ -149,10 +149,10 @@ public class MenuShareRunner {
             OutputStream os = null;
             String code = null;
             try {
-                connection.connect();
-                is = connection.getInputStream();
                 os = connection.getOutputStream();
                 fillPost(os, f);
+                connection.connect();
+                is = connection.getInputStream();
                 code = readCode(is);
             } finally {
                 if (is != null) {
@@ -169,7 +169,7 @@ public class MenuShareRunner {
             String req = "";
             req += "key=" + URLEncoder.encode(PASTE_KEY, "UTF-8");
             req += "&description=" + URLEncoder.encode("A SnackBar Menu", "UTF-8");
-            req += "&expire=60";
+            req += "&expire=1800";
             req += "&format=simple";
             req += "&return=id";
 

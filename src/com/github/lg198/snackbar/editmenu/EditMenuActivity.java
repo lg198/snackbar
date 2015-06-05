@@ -1,15 +1,16 @@
 package com.github.lg198.snackbar.editmenu;
 
-import android.app.ActionBar;
-import android.app.Activity;
-import android.app.ListFragment;
+import android.app.*;
+import android.content.DialogInterface;
 import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.*;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 import com.github.lg198.snackbar.R;
+import com.github.lg198.snackbar.ReportableException;
 import com.github.lg198.snackbar.SBMenuItem;
 import com.github.lg198.snackbar.SBMenuItemTree;
 import org.json.simple.JSONValue;
@@ -208,8 +209,37 @@ public class EditMenuActivity extends Activity {
     }
 
     public void goToShareDialog() {
-        MenuShareFragment share = new MenuShareFragment();
-        share.show(getFragmentManager(), "share_dialog");
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        final View v = getLayoutInflater().inflate(R.layout.edit_menu_share_dialog, null);
+        builder.setView(v);
+        final TextView resview = (TextView) v.findViewById(R.id.edit_menu_share_message);
+        final MenuShareUploadCallback callback = new MenuShareUploadCallback() {
+            @Override
+            public void finished(MenuShareUploadResult result) {
+                if (result.wasSuccessful()) {
+                    resview.setText("Success! Your menu code is " + result.getCode());
+                } else {
+                    resview.setText(result.getError().getMessage());
+                    Log.wtf("lrg", "Upload Error", result.getError().getUnderlying());
+                }
+            }
+        };
+        builder.setNeutralButton("OK", null);
+
+        Dialog d = builder.create();
+        d.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialog) {
+                try {
+                    MenuShareRunner.uploadMenu(EditMenuActivity.this, callback);
+                } catch (ReportableException re) {
+                    AlertDialog.Builder ebuild = new AlertDialog.Builder(EditMenuActivity.this);
+                    ebuild.setMessage("Could not connect to internet!");
+                    ebuild.create().show();
+                }
+            }
+        });
+        d.show();
     }
 
     public void goToImportDialog() {

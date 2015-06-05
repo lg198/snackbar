@@ -6,9 +6,7 @@ import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.*;
-import android.widget.AdapterView;
-import android.widget.ListView;
-import android.widget.TextView;
+import android.widget.*;
 import com.github.lg198.snackbar.R;
 import com.github.lg198.snackbar.ReportableException;
 import com.github.lg198.snackbar.SBMenuItem;
@@ -38,6 +36,7 @@ public class EditMenuActivity extends Activity {
                 .add(R.id.edit_menu_items_list_fragment, lf, "__root")
                 .commit();
         getFragmentManager().executePendingTransactions();
+
 
         final EditMenuAdapter adapter = new EditMenuAdapter(getTree(), "__root", getLayoutInflater());
         currentPos = "__root";
@@ -243,6 +242,39 @@ public class EditMenuActivity extends Activity {
     }
 
     public void goToImportDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        LinearLayout layout = new LinearLayout(this);
+        layout.setOrientation(LinearLayout.VERTICAL);
+        final EditText infoView = new EditText(this);
+        layout.addView(infoView);
+        infoView.getLayoutParams().width = ViewGroup.LayoutParams.MATCH_PARENT;
+        infoView.setHint("Share Code");
+        builder.setView(layout);
 
+        final MenuShareDownloadCallback callback = new MenuShareDownloadCallback() {
+            @Override
+            public void finished(MenuShareDownloadResult result) {
+                updateList();
+            }
+        };
+
+        builder.setPositiveButton("Import", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                try {
+                    MenuShareRunner.downloadMenu(EditMenuActivity.this, infoView.getText().toString(), callback);
+                } catch (ReportableException e) {
+                    AlertDialog.Builder ebuild = new AlertDialog.Builder(EditMenuActivity.this);
+                    ebuild.setMessage("Could not connect to internet!");
+                    ebuild.create().show();
+                }
+            }
+        });
+        builder.create().show();
+    }
+
+    public void updateList() {
+        ListFragment lf = (ListFragment) getFragmentManager().findFragmentByTag(currentPos);
+        lf.setListAdapter(currentAdapter);
     }
 }

@@ -14,5 +14,9 @@
         <activity android:name=".editmenu.EditMenuActivity" android:theme="@android:style/Theme.Material.Light"
                   android:parentActivityName=".MainActivity"
                   android:screenOrientation="portrait"/>
+        <activity android:name=".addtransaction.AddTransactionActivity"
+                  android:theme="@android:style/Theme.Material.Light"
+                  android:parentActivityName=".MainActivity"
+                  android:screenOrientation="portrait"/>
     </application>
 </manifest>

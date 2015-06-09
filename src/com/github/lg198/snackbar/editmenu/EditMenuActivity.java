@@ -255,6 +255,16 @@ public class EditMenuActivity extends Activity {
             @Override
             public void finished(MenuShareDownloadResult result) {
                 updateList();
+
+                if (!result.wasSuccessful()) {
+                    AlertDialog.Builder ebuild = new AlertDialog.Builder(EditMenuActivity.this);
+                    ebuild.setMessage("An error occurred: " + result.getError().getMessage());
+                    ebuild.create().show();
+                } else {
+                    AlertDialog.Builder ebuild = new AlertDialog.Builder(EditMenuActivity.this);
+                    ebuild.setMessage("Success!");
+                    ebuild.create().show();
+                }
             }
         };
 

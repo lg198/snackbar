@@ -1,0 +1,21 @@
+{
+  "__root.Burgers": [
+    {
+      "name": "Cheeseburger",
+      "cost": 3.50,
+      "category": false
+    },
+    {
+      "name": "Hamburger",
+      "cost": 3.0,
+      "category": false
+    }
+  ],
+  "__root": [
+    {
+      "name": "Burgers",
+      "children": [],
+      "category": true
+    }
+  ]
+}

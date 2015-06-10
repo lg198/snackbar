@@ -10,6 +10,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.ListView;
 import android.widget.TextView;
+import com.github.lg198.snackbar.addtransaction.AddTransactionActivity;
 import com.github.lg198.snackbar.editmenu.EditMenuActivity;
 
 public class MainActivity extends Activity {
@@ -50,7 +51,8 @@ public class MainActivity extends Activity {
                 startActivity(editMenuIntent);
                 return true;
             case R.id.main_menu_add_transaction:
-                //TODO: OPEN TRANSACTION SELECTOR
+                Intent addTransactionIntent = new Intent(this, AddTransactionActivity.class);
+                startActivity(addTransactionIntent);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

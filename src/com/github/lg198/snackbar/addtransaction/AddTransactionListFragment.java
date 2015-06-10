@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ListView;
 import com.github.lg198.snackbar.SBMenuItem;
-import com.github.lg198.snackbar.editmenu.EditMenuActivity;
 import com.github.lg198.snackbar.editmenu.EditMenuAdapter;
 
 public class AddTransactionListFragment extends ListFragment {
@@ -15,7 +14,11 @@ public class AddTransactionListFragment extends ListFragment {
         EditMenuAdapter adapter = (EditMenuAdapter) this.getListAdapter();
         SBMenuItem item = (SBMenuItem) adapter.getItem(position);
         if (item.category) {
-            ((EditMenuActivity) getActivity()).openFragment(adapter.tree, adapter.treePos + "." + item.name);
+            ((AddTransactionActivity) getActivity()).openFragment(adapter.tree, adapter.treePos + "." + item.name);
+        } else {
+            TransactionItem titem = new TransactionItem(item.name, 1, item.cost);
+            ((AddTransactionActivity) getActivity()).items.add(titem);
+            ((AddTransactionActivity) getActivity()).updateItems();
         }
     }
 

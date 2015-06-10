@@ -7,7 +7,7 @@
             android:layout_width="fill_parent"
             android:layout_height="fill_parent" android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            android:layout_above="@+id/add_transaction_bottomBar">
+            android:layout_above="@+id/add_transaction_bottomBar" android:id="@+id/add_transaction_list_container">
     </LinearLayout>
     <FrameLayout
             android:layout_width="match_parent"
@@ -19,7 +19,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Current Total:"
+                android:text="Current Total: $0.0"
                 android:id="@+id/add_transaction_totalLabel" android:layout_margin="5dp"/>
     </FrameLayout>
 </RelativeLayout>

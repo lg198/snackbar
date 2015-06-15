@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" android:padding="25dp" android:id="@+id/transaction_container">
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Transaction ID:"
+            android:id="@+id/transaction_idText" android:textColor="#000000"
+            />
+    <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/transaction_scrollView" android:layout_gravity="center_horizontal"
+            android:layout_marginTop="25dp"
+            android:layout_below="@+id/transaction_idText" android:layout_above="@+id/transaction_totalText"
+            android:fillViewport="true">
+        <ListView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/transaction_list" android:layout_alignBottom="@+id/transaction_scrollView"
+                android:layout_alignParentStart="false" android:layout_alignTop="@+id/transaction_scrollView"/>
+    </ScrollView>
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Total:"
+            android:id="@+id/transaction_totalText" android:layout_gravity="center_horizontal"
+            android:textColor="#000000" android:textSize="30dp"
+            android:layout_above="@+id/transaction_waitlistText"
+            android:layout_centerHorizontal="true"/>
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+              android:textAppearance="?android:attr/textAppearanceMedium" android:text="0 items are waitlisted"
+              android:id="@+id/transaction_waitlistText" android:layout_gravity="center_horizontal"
+              android:layout_centerHorizontal="true"
+              android:layout_above="@+id/transaction_finishButton"/>
+    <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Finish"
+            android:id="@+id/transaction_finishButton" android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"/>
+</RelativeLayout>

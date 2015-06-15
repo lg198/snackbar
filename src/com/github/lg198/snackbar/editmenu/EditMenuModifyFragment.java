@@ -94,6 +94,7 @@ public class EditMenuModifyFragment extends DialogFragment {
                     }
                 }
 
+                ((EditMenuActivity) getActivity()).saveMenu(((EditMenuActivity) getActivity()).getTree());
                 dialog.dismiss();
             }
         });

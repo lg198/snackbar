@@ -19,7 +19,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Current Total: $0.0"
+                android:text="Current Total: $0.00"
                 android:id="@+id/add_transaction_totalLabel" android:layout_margin="5dp"/>
     </FrameLayout>
 </RelativeLayout>
